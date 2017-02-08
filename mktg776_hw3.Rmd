@@ -61,7 +61,7 @@ We first load the provided prescription data. Below are all 16 records:
 pacman::p_load(tidyverse, forcats, pander, ggrepel)
 panderOptions('round', 2)
 panderOptions('keep.trailing.zeros', TRUE)
-options(scipen = 10)
+options(scipen = 10, expressions = 10000)
 
 prescription_data <- readxl::read_excel("HW prescription data.xls")
 
@@ -493,13 +493,13 @@ dau_model_param %>%
        caption = "Any variation is merely a function of sampling")
 ```
 
-Lastly, we plot the cumulative sum of probability of Facebook visits.
+Lastly, we plot the cumulative sum of probability of Facebook visits and see that using weeks the weight of the cumulative sum of the probability is for greater number of vitis. This is expected because looking at a larger time period, there is more opportunity to large $\lambda$ visitors to visit Facebook.
 
 ```{r}
 dau_model_param %>%
-  crossing(x = 0:100) %>%
+  crossing(x = 0:1500) %>%
   rowwise() %>%
-  mutate(p_x = sapply(x, fn_nbd_recursive, r, alpha, t = ifelse(period == "Daily", 1, 1))) %>%
+  mutate(p_x = sapply(x, fn_nbd_recursive, r, alpha, t = 1)) %>%
   arrange(period, x) %>%
   group_by(period) %>%
   mutate(cumsum = cumsum(p_x)) %>%
